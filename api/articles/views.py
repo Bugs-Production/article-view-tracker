@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.articles.serializers import ArticleCreateSerializer, ArticleViewCreateSerializer
+from api.throttles import ArticleViewRateThrottle
 from articles.managers import create_article, create_article_view, get_all_articles
 from articles.services.popular_articles import PopularArticlesService
 
@@ -33,6 +34,8 @@ class ArticlePopularListView(APIView):
 
 
 class ArticleViewCreateView(APIView):
+    throttle_classes = [ArticleViewRateThrottle]
+
     def post(self, request: Request, article_id: int) -> Response:
         serializer = ArticleViewCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
