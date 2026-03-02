@@ -23,7 +23,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # third-party
     "rest_framework",
-    "django_celery_beat",
     # local
     "articles",
 ]
@@ -87,7 +86,12 @@ CACHES = {
 CELERY_BROKER_URL = env("REDIS_URL")
 CELERY_RESULT_BACKEND = env("REDIS_URL")
 CELERY_TIMEZONE = "UTC"
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_BEAT_SCHEDULE = {
+    "cleanup-old-article-views": {
+        "task": "articles.tasks.cleanup_old_article_views",
+        "schedule": 60 * 60 * 24,  # раз в сутки
+    },
+}
 
 
 # DRF
