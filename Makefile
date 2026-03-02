@@ -1,4 +1,4 @@
-.PHONY: build up down restart logs runserver shell migrate makemigrations test startapp createsuperuser format
+.PHONY: build up down restart logs runserver shell bash migrate makemigrations test startapp createsuperuser format
 
 build:
 	docker compose build
