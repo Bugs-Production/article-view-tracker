@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 
 from api.articles.serializers import ArticleCreateSerializer, ArticleViewCreateSerializer
 from articles.managers import create_article, create_article_view, get_all_articles
+from articles.services.popular_articles import PopularArticlesService
 
 
 class ArticleListCreateView(APIView):
@@ -20,6 +21,15 @@ class ArticleListCreateView(APIView):
         serializer = ArticleCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(create_article(**serializer.validated_data), status=status.HTTP_201_CREATED)
+
+
+class ArticlePopularListView(APIView):
+    pagination_class = PageNumberPagination
+
+    def get(self, request: Request) -> Response:
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(PopularArticlesService()(), request)
+        return paginator.get_paginated_response(page)
 
 
 class ArticleViewCreateView(APIView):
