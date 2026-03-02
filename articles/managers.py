@@ -1,6 +1,8 @@
 import logging
 from dataclasses import asdict
 
+from django.shortcuts import get_object_or_404
+
 from articles.models import Article, ArticleView
 from articles.tasks import increment_views_counter
 from articles.transfer_objects.articles import ArticleDTO
@@ -22,6 +24,7 @@ def _to_dto(article: Article) -> dict:
 
 
 def create_article_view(article_id: int, user_id: int) -> None:
+    get_object_or_404(Article, id=article_id)
     ArticleView.objects.create(article_id=article_id, user_id=user_id)
     increment_views_counter.delay(article_id)
     logger.info("Article view recorded: article_id=%s user_id=%s", article_id, user_id)
