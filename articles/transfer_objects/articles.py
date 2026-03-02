@@ -8,3 +8,4 @@ class ArticleDTO:
     title: str
     content: str
     created_at: str
+    views_counter: int
