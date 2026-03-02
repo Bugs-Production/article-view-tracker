@@ -1,8 +1,11 @@
+import logging
 from datetime import timedelta
 
 from celery import shared_task
 from django.db.models import F
 from django.utils import timezone
+
+logger = logging.getLogger("articles")
 
 
 @shared_task
@@ -17,4 +20,5 @@ def cleanup_old_article_views() -> None:
     from articles.models import ArticleView
 
     cutoff = timezone.now() - timedelta(days=30)
-    ArticleView.objects.filter(viewed_at__lt=cutoff).delete()
+    deleted, _ = ArticleView.objects.filter(viewed_at__lt=cutoff).delete()
+    logger.info("Cleanup completed: deleted %s old article views", deleted)
