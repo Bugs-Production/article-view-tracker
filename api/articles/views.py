@@ -1,9 +1,11 @@
+from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from articles.managers import get_all_articles
+from api.articles.serializers import ArticleCreateSerializer
+from articles.managers import create_article, get_all_articles
 
 
 class ArticleListCreateView(APIView):
@@ -13,3 +15,8 @@ class ArticleListCreateView(APIView):
         paginator = self.pagination_class()
         page = paginator.paginate_queryset(get_all_articles(), request)
         return paginator.get_paginated_response(page)
+
+    def post(self, request: Request) -> Response:
+        serializer = ArticleCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(create_article(**serializer.validated_data), status=status.HTTP_201_CREATED)

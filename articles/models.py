@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Article(models.Model):
+    user_id = models.PositiveIntegerField()
     title = models.CharField(max_length=250)
     content = models.TextField()
     is_published = models.BooleanField(default=False)
